@@ -12,7 +12,7 @@ def free_memory():
     print('Freeing memory resources')
 
 
-def main(gpu):
+def main(gpu, epochs):
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"] = gpu
 
@@ -66,7 +66,7 @@ def main(gpu):
 
     model = tf.keras.models.Sequential([
         # Note the input shape is the desired size of the image 150x150 with 3 bytes color
-        tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(150, 150, 3)),
+        tf.keras.layers.Conv2D(16, (3, 3), activation='relu', input_shape=(img_size, img_size, 3)),
         tf.keras.layers.MaxPooling2D(2, 2),
         tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
         tf.keras.layers.MaxPooling2D(2, 2),
@@ -88,7 +88,7 @@ def main(gpu):
     history = model.fit_generator(train_generator,
                                   validation_data=validation_generator,
                                   steps_per_epoch=100,
-                                  epochs=15,
+                                  epochs=epochs,
                                   validation_steps=50,
                                   verbose=2)
 
@@ -106,7 +106,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Script for retraining ConvNets')
     parser.add_argument(
         "--gpu",
+        default="0",
         type=str,
+        help="Number of the gpu to use for training"
+    )
+    parser.add_argument(
+        "--epochs",
+        type=int,
+        default=10,
         help="Number of the gpu to use for training"
     )
     args = parser.parse_args()
