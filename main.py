@@ -117,4 +117,4 @@ if __name__ == '__main__':
         help="Number of the gpu to use for training"
     )
     args = parser.parse_args()
-    main(gpu=args.gpu)
+    main(gpu=args.gpu, epochs=args.epochs)
